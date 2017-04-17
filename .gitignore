@@ -1,32 +1,25 @@
-# Prerequisites
-*.d
-
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+*.psess
+*.vsp
+*.log
+*.err
+*.wrn
+*.suo
+*.sdf
+*.user
+*.i
+*.vspscc
+*.opensdf
+*.opendb
+*.ipch
+*.cache
+*.tlog
+*.lastbuildstate
+*.ilk
+*.VC.db
+Bin
+/Src/Shaders/Compiled/XboxOne*.inc
+/Src/Shaders/Compiled/XboxOne*.pdb
+/ipch
+/MakeSpriteFont/obj
+/Tests
+/wiki
