@@ -40,16 +40,14 @@ void Game::Initialize(HWND window, int width, int height)
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
     */
 
+
+
 	// 初期化処理
 
-	// primitiveBatch
+	// プリミティブバッチ
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(m_d3dContext.Get());
 
-	// basicEffect
-	//std::unique_ptr<BasicEffect> basicEffect;
-	//ComPtr<ID3D11InputLayout> inputLayout;
-
-	// basicEffect
+	// ベーシックエフェクト
 	m_basicEffect = std::make_unique<BasicEffect>(m_d3dDevice.Get());
 
 	m_basicEffect->SetProjection(XMMatrixOrthographicOffCenterRH(0, m_outputWidth, m_outputHeight, 0, 0, 1));
@@ -66,11 +64,21 @@ void Game::Initialize(HWND window, int width, int height)
 		shaderByteCode, byteCodeLength,
 		m_inputLayout.GetAddressOf());
 
-	// CommonStates
+	// コモンステートの生成
 	m_states = std::make_unique<CommonStates>(m_d3dDevice.Get());
 
-
+	// デバッグカメラ生成
 	m_debagCamera = std::make_unique<DebugCamera>(m_outputHeight, m_outputWidth);
+
+	// エフェクトファクトリ生成
+	m_factory = std::make_unique<EffectFactory>(m_d3dDevice.Get());
+	// テクスチャのパスを指定
+	m_factory->SetDirectory(L"Resources");
+
+	// モデルの生成
+	m_modelSkydome = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\skydome.cmo", *m_factory);
+	// モデルの生成
+	m_modelGround = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\ground1m.cmo", *m_factory);
 
 }
 
@@ -92,6 +100,7 @@ void Game::Update(DX::StepTimer const& timer)
 
     // TODO: Add your game logic here.
     elapsedTime;
+
 
 	// マイフレーム処理
 
@@ -140,7 +149,7 @@ void Game::Render()
 	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f /*視野角(上下方向)*/,
 		float(m_outputWidth) / float(m_outputHeight) /*アスペクト比*/, 
 		0.1f /*ニアクリップ*/,
-		10.f /*ファークリップ*/);
+		150.f /*ファークリップ*/);
 
 	m_basicEffect->SetView(m_view);
 	m_basicEffect->SetProjection(m_proj);
@@ -152,6 +161,13 @@ void Game::Render()
 
 	m_basicEffect->Apply(m_d3dContext.Get());
 	m_d3dContext->IASetInputLayout(m_inputLayout.Get());
+
+	// モデルの描画
+	// 天球
+	m_modelSkydome->Draw(m_d3dContext.Get(), *m_states.get(), m_world, m_view, m_proj);
+	// 地面
+	m_modelGround->Draw(m_d3dContext.Get(), *m_states.get(), m_world, m_view, m_proj);
+
 
 	m_primitiveBatch->Begin();
 	//m_primitiveBatch->DrawLine(VertexPositionColor(Vector3(0,0,0),Color(1,1,0)), VertexPositionColor(Vector3(800, 600, 0), Color(1, 1, 1)));

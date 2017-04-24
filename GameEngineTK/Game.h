@@ -11,6 +11,7 @@
 #include <Effects.h>
 #include <CommonStates.h>
 #include <SimpleMath.h>
+#include <Model.h>
 
 #include "DebugCamera.h"
 
@@ -72,17 +73,17 @@ private:
     DX::StepTimer                                   m_timer;
 
 private:
-	// primitivebatch
+	// プリミティブバッチ
 	//std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionNormal>> m_primitiveBatch;
 
-	// basiceffect
+	// ベーシックエフェクト
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
 	
-	// commonstates
+	// コモンステート
 	std::unique_ptr<DirectX::CommonStates> m_states;
 	
-	// inputlayout
+	// インプットレイアウト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 
 	// ワールド行列
@@ -92,7 +93,15 @@ private:
 	// プロジェクション行列
 	DirectX::SimpleMath::Matrix m_proj;
 
-	// debagcamera
+	// デバッグカメラ
 	std::unique_ptr<DebugCamera> m_debagCamera;
+
+	// エフェクトファクトリ
+	std::unique_ptr<DirectX::EffectFactory> m_factory;
+	
+	// 天球モデル
+	std::unique_ptr<DirectX::Model> m_modelSkydome;
+	// 地面モデル
+	std::unique_ptr<DirectX::Model> m_modelGround;
 
 };
