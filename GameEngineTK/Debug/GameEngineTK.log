@@ -1,4 +1,5 @@
-﻿  Assets\ground1m.FBX
+﻿  Assets\ball.FBX
+  Assets\ground1m.FBX
   Assets\skydome.FBX
   Game.cpp
 c:\users\s162008\desktop\gameenginetk\gameenginetk\game.cpp(53): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。

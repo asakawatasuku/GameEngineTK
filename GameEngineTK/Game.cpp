@@ -44,6 +44,9 @@ void Game::Initialize(HWND window, int width, int height)
 
 	// 初期化処理
 
+	i = 0;
+	j = 0;
+
 	// プリミティブバッチ
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(m_d3dContext.Get());
 
@@ -79,6 +82,8 @@ void Game::Initialize(HWND window, int width, int height)
 	m_modelSkydome = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\skydome.cmo", *m_factory);
 	// モデルの生成
 	m_modelGround = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\ground1m.cmo", *m_factory);
+	// モデルの生成
+	m_modelBall = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\ball.cmo", *m_factory);
 
 }
 
@@ -104,7 +109,50 @@ void Game::Update(DX::StepTimer const& timer)
 
 	// マイフレーム処理
 
+	// デバッグカメラの更新
 	m_debagCamera->Update();
+
+	// スケーリング
+	Matrix scalemat = Matrix::CreateScale(0.1f);
+
+	int cnt = 360;
+
+
+	
+	for (i = 0; i < 10; i++)
+	{
+	
+		// ロール
+		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i));
+		// ピッチ
+		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
+		// ヨー
+		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0));
+		// 回転行列の合成
+		Matrix rotmat = (rotmatz * rotmatx * rotmaty);
+		// 平行移動
+		Matrix transmat = Matrix::CreateTranslation(20.0f, 0.0f, 0.0f);
+
+		// ワールド行列の合成(SRT)
+		m_worldBall[i] = scalemat * transmat * rotmat;
+	}
+	for (i = 0; i < 10; i++)
+	{
+		// ロール
+		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i));
+		// ピッチ
+		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
+		// ヨー
+		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0));
+		// 回転行列の合成
+		Matrix rotmat = (rotmatz * rotmatx * rotmaty);
+		// 平行移動
+		Matrix transmat = Matrix::CreateTranslation(40.0f, 0.0f, 0.0f);
+
+		// ワールド行列の合成(SRT)
+		m_worldBalls[i] = scalemat * transmat * rotmat;
+
+	}
 
 }
 
@@ -167,6 +215,20 @@ void Game::Render()
 	m_modelSkydome->Draw(m_d3dContext.Get(), *m_states.get(), m_world, m_view, m_proj);
 	// 地面
 	m_modelGround->Draw(m_d3dContext.Get(), *m_states.get(), m_world, m_view, m_proj);
+
+	for (i = 0; i < 10; i++)
+	{
+		// ボール
+		m_modelBall->Draw(m_d3dContext.Get(), *m_states.get(), m_worldBall[i], m_view, m_proj);
+
+	}
+	for (i = 0; i < 10; i++)
+	{
+		// ボール
+		m_modelBall->Draw(m_d3dContext.Get(), *m_states.get(), m_worldBalls[i], m_view, m_proj);
+
+	}
+
 
 
 	m_primitiveBatch->Begin();
