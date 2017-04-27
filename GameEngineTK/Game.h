@@ -108,8 +108,11 @@ private:
 	
 	// 球のワールド行列
 	//DirectX::SimpleMath::Matrix m_worldBall;
-	DirectX::SimpleMath::Matrix m_worldBall[10];
-	DirectX::SimpleMath::Matrix m_worldBalls[10];
+	DirectX::SimpleMath::Matrix m_worldBall[20];
+
+	// 地面の行列
+	DirectX::SimpleMath::Matrix m_worldGround[200][200];
+
 
 	int i;
 	int j;
