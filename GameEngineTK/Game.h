@@ -113,4 +113,5 @@ private:
 
 	int i;
 	int j;
+	float cnt;
 };

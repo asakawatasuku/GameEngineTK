@@ -46,6 +46,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	i = 0;
 	j = 0;
+	cnt = 0;
 
 	// プリミティブバッチ
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(m_d3dContext.Get());
@@ -115,15 +116,14 @@ void Game::Update(DX::StepTimer const& timer)
 	// スケーリング
 	Matrix scalemat = Matrix::CreateScale(0.1f);
 
-	int cnt = 360;
 
+	cnt += 0.036f;
 
 	
 	for (i = 0; i < 10; i++)
 	{
-	
 		// ロール
-		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i));
+		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i)+cnt);
 		// ピッチ
 		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
 		// ヨー
@@ -139,7 +139,7 @@ void Game::Update(DX::StepTimer const& timer)
 	for (i = 0; i < 10; i++)
 	{
 		// ロール
-		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i));
+		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(36 * i)-cnt);
 		// ピッチ
 		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
 		// ヨー
