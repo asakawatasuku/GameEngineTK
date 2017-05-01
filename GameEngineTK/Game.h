@@ -105,16 +105,24 @@ private:
 	std::unique_ptr<DirectX::Model> m_modelGround;
 	// ボールモデル
 	std::unique_ptr<DirectX::Model> m_modelBall;
+	// ティーポットモデル
+	std::unique_ptr<DirectX::Model> m_modelTeapot;
+
+	// ティーポットのワールド行列
+	DirectX::SimpleMath::Matrix m_worldTeapot[20];
 	
 	// 球のワールド行列
 	//DirectX::SimpleMath::Matrix m_worldBall;
-	DirectX::SimpleMath::Matrix m_worldBall[20];
+	//DirectX::SimpleMath::Matrix m_worldBall[20];
 
 	// 地面の行列
-	DirectX::SimpleMath::Matrix m_worldGround[200][200];
+	//DirectX::SimpleMath::Matrix m_worldGround[200][200];
+	// 平行移動
+	DirectX::SimpleMath::Matrix m_transmat[20];
 
-
-	int i;
-	int j;
-	float cnt;
+	float m_cnt;
+	float m_angule;
+	float m_distance;
+	float m_val;
+	float m__cnt;
 };
