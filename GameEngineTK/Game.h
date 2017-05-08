@@ -12,6 +12,7 @@
 #include <CommonStates.h>
 #include <SimpleMath.h>
 #include <Model.h>
+#include <Keyboard.h>
 
 #include "DebugCamera.h"
 
@@ -107,22 +108,40 @@ private:
 	std::unique_ptr<DirectX::Model> m_modelBall;
 	// ティーポットモデル
 	std::unique_ptr<DirectX::Model> m_modelTeapot;
+	// 頭モデル
+	std::unique_ptr<DirectX::Model> m_modelhead;
 
 	// ティーポットのワールド行列
 	DirectX::SimpleMath::Matrix m_worldTeapot[20];
-	
+		
+	// 平行移動
+	DirectX::SimpleMath::Matrix m_transmat[20];
+
 	// 球のワールド行列
 	//DirectX::SimpleMath::Matrix m_worldBall;
 	//DirectX::SimpleMath::Matrix m_worldBall[20];
 
 	// 地面の行列
 	//DirectX::SimpleMath::Matrix m_worldGround[200][200];
-	// 平行移動
-	DirectX::SimpleMath::Matrix m_transmat[20];
+	DirectX::SimpleMath::Matrix m_worldhead;
+
+	// キーボードの取得
+	std::unique_ptr<DirectX::Keyboard> m_keyboard;
+
+	// 頭の座標
+	DirectX::SimpleMath::Vector3 m_head_pos;
 
 	float m_cnt;
 	float m_angule;
 	float m_distance;
 	float m_val;
 	float m__cnt;
+	DirectX::SimpleMath::Vector3 m_startPosition[20];
+	DirectX::SimpleMath::Vector3 m_targetPosition;
+	DirectX::SimpleMath::Vector3 m_pos;
+	float m_time;
+
+public:
+	DirectX::SimpleMath::Vector3 Lerp(DirectX::SimpleMath::Vector3 startPosition, DirectX::SimpleMath::Vector3 targetPosition, float t);
+
 };

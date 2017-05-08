@@ -42,7 +42,6 @@ void Game::Initialize(HWND window, int width, int height)
     */
 
 
-
 	// 初期化処理
 
 	srand(static_cast<unsigned int>(time(nullptr)));
@@ -51,6 +50,7 @@ void Game::Initialize(HWND window, int width, int height)
 
 	m_cnt = 0;
 	m__cnt = 0;
+	m_angule = 0;
 
 	// プリミティブバッチ
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionNormal>>(m_d3dContext.Get());
@@ -78,6 +78,8 @@ void Game::Initialize(HWND window, int width, int height)
 	// デバッグカメラ生成
 	m_debagCamera = std::make_unique<DebugCamera>(m_outputHeight, m_outputWidth);
 
+	m_keyboard = std::make_unique<DirectX::Keyboard>();
+
 	// エフェクトファクトリ生成
 	m_factory = std::make_unique<EffectFactory>(m_d3dDevice.Get());
 	// テクスチャのパスを指定
@@ -91,33 +93,36 @@ void Game::Initialize(HWND window, int width, int height)
 	m_modelBall = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\ball.cmo", *m_factory);
 	// モデルの生成
 	m_modelTeapot = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\teapot.cmo", *m_factory);
-	
+	// モデルの生成
+	m_modelhead = Model::CreateFromCMO(m_d3dDevice.Get(), L"Resources\\head.cmo", *m_factory);
 	
 	m_val = 0;
+	m_time = 10;
+	m_targetPosition = Vector3(0, 0, 0);
 			
-	for (int i = 0; i < 20; i++)
-	{
-		XMConvertToRadians(m_angule);
-		m_angule = rand() % 360;
-		m_distance = rand() % 100;
-		x = cosf(m_angule) * m_distance;
-		z = sinf(m_angule) * m_distance;	
-		// スケーリング
-		Matrix scalemat = Matrix::CreateScale(1.0f);
-		// ロール
-		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(0));
-		// ピッチ
-		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
-		// ヨー
-		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0));
-		// 回転行列の合成
-		Matrix rotmat = (rotmatz * rotmatx * rotmaty);
-		// 平行移動
-		m_transmat[i] = Matrix::CreateTranslation(x, 0.0f, z);
-		
-		// ワールド行列の合成(SRT)
-		m_worldTeapot[i] = scalemat *rotmat * m_transmat[i];
-	}
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	XMConvertToRadians(m_angule);
+	//	m_angule = rand() % 360;
+	//	m_distance = rand() % 100;
+	//	x = cosf(m_angule) * m_distance;
+	//	z = sinf(m_angule) * m_distance;	
+	//	// スケーリング
+	//	Matrix scalemat = Matrix::CreateScale(1.0f);
+	//	// ロール
+	//	Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(0));
+	//	// ピッチ
+	//	Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
+	//	// ヨー
+	//	Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0));
+	//	// 回転行列の合成
+	//	Matrix rotmat = (rotmatz * rotmatx * rotmaty);
+	//	// 平行移動
+	//	m_transmat[i] = Matrix::CreateTranslation(x, 0.0f, z);
+	//	m_startPosition[i] = Vector3(x, 0.0f, z);
+	//	// ワールド行列の合成(SRT)
+	//	m_worldTeapot[i] = scalemat * rotmat * m_transmat[i];
+	//}
 
 }
 
@@ -200,28 +205,85 @@ void Game::Update(DX::StepTimer const& timer)
 	//		m_worldGround[i][j] = scalemat *rotmat * transmat;
 	//	}
 	//}		
-	//Matrix scalemat = Matrix::CreateScale(1.0f);	
 	
-	// スケーリング
-	for (int i = 0; i < 20; i++)
-	{	
-		m__cnt += 5.0f/360.0f;
-		m_val  = sinf(XMConvertToRadians(m__cnt) + 1.0f)+4.0f;
-		// スケーリング
-		Matrix scalemat = Matrix::CreateScale(m_val);
-		// ロール
-		Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(0));
-		// ピッチ
-		Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
-		// ヨー
- 		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36*2)*m_cnt);
-		// 回転行列の合成
-		Matrix rotmat = (rotmatz * rotmatx * rotmaty);
-		// ワールド行列の合成(SRT)
-		m_worldTeapot[i] = scalemat *rotmat * m_transmat[i];
+	//// スケーリング
+	//for (int i = 0; i < 20; i++)
+	//{	
+	//	m__cnt += 5.0f/360.0f;
+	//	m_val = sinf(XMConvertToRadians((m__cnt)+1.0f)*4.0f)+1.0f;
+	//	m_val += 1.0f;
+	//	// スケーリング
+	//	Matrix scalemat = Matrix::CreateScale(m_val);
+	//	// ロール
+	//	Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(0));
+	//	// ピッチ
+	//	Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
+	//	// ヨー
+ //		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36*2)*m_cnt);
+	//	// 回転行列の合成
+	//	Matrix rotmat = (rotmatz * rotmatx * rotmaty);
+	//	// ワールド行列の合成(SRT)
+	//	m_worldTeapot[i] = scalemat * rotmat * m_transmat[i];
+	//	
+	//}
+	//for (int i = 0; i < 20; i++)
+	//{
+	//	m_pos = Lerp(m_startPosition[i], m_targetPosition, m_time);
+	//	// スケーリング
+	//	Matrix scalemat = Matrix::CreateScale(1.0f);
+	//	// ロール
+	//	Matrix rotmatz = Matrix::CreateRotationZ(XMConvertToRadians(0));
+	//	// ピッチ
+	//	Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
+	//	// ヨー
+	//	Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(0));
+	//	// 回転行列の合成
+	//	Matrix rotmat = (rotmatz * rotmatx * rotmaty);
+	//	// 平行移動
+	//	m_transmat[i] = Matrix::CreateTranslation(m_pos);
+	//	// ワールド行列の合成(SRT)
+	//	m_worldTeapot[i] = scalemat * m_transmat[i] * rotmat;
+	//}
 
+
+	Keyboard::State kb = m_keyboard->GetState();
+
+
+	// 旋回処理
+	if (kb.A)
+	{
+		m_angule += 0.01f;
 	}
-	
+	if (kb.D)
+	{
+		m_angule -= 0.01f;
+	}
+
+	// 前進処理
+	if (kb.W)
+	{
+		Vector3 moveV(0, 0, -0.1f);
+		// 移動ベクトルを回転
+		moveV = Vector3::TransformNormal(moveV, m_worldhead);
+		m_head_pos += moveV;
+	}	
+	// 後退処理
+	if (kb.S)
+	{
+		Vector3 moveV(0, 0, -0.1f);
+		// 移動ベクトルを回転
+		moveV = Vector3::TransformNormal(moveV, m_worldhead);
+		m_head_pos -= moveV;
+	}
+
+	{// 自機のワールド行列を作成
+		// 回転
+		Matrix rotmat = Matrix::CreateRotationY(m_angule);
+		// 平行移動
+		Matrix transmat = Matrix::CreateTranslation(m_head_pos);
+		// 平行移動行列をワールド行列に
+		m_worldhead = rotmat * transmat;
+	}
 }
 
 // Draws the scene.
@@ -300,10 +362,14 @@ void Game::Render()
 
 
 	// ティーポット
-	for (int i = 0; i < 20; i++)
+	/*for (int i = 0; i < 20; i++)
 	{
 		m_modelTeapot->Draw(m_d3dContext.Get(), *m_states.get(), m_worldTeapot[i], m_view, m_proj);
-	}
+	}*/
+
+	// 頭
+	m_modelhead->Draw(m_d3dContext.Get(), *m_states.get(), m_worldhead, m_view, m_proj);
+	
 
 
 	m_primitiveBatch->Begin();
@@ -620,4 +686,13 @@ void Game::OnDeviceLost()
     CreateDevice();
 
     CreateResources();
+}
+
+Vector3 Game::Lerp(Vector3 startPosition, Vector3 targetPosition, float t)
+{
+	Vector3 lerpPosition = Vector3(0,0,0);
+
+	lerpPosition = (1 - t) * startPosition + t * targetPosition;
+
+	return lerpPosition;
 }
