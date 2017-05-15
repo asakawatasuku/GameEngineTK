@@ -15,6 +15,7 @@
 #include <Keyboard.h>
 
 #include "DebugCamera.h"
+#include "FollowCamera.h"
 
 
 // A basic game implementation that creates a D3D11 device and
@@ -140,6 +141,8 @@ private:
 	DirectX::SimpleMath::Vector3 m_targetPosition;
 	DirectX::SimpleMath::Vector3 m_pos;
 	float m_time;
+
+	std::unique_ptr<FollowCamera> m_camera;
 
 public:
 	DirectX::SimpleMath::Vector3 Lerp(DirectX::SimpleMath::Vector3 startPosition, DirectX::SimpleMath::Vector3 targetPosition, float t);

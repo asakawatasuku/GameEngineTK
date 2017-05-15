@@ -4,9 +4,12 @@
   Assets\head.FBX
   Assets\skydome.FBX
   Assets\teapot.FBX
+  Main.cpp
   Game.cpp
 c:\users\s162008\desktop\gameenginetk\gameenginetk\game.cpp(61): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\s162008\desktop\gameenginetk\gameenginetk\game.cpp(49): warning C4101: 'z': ローカル変数は 1 度も使われていません。
-c:\users\s162008\desktop\gameenginetk\gameenginetk\game.cpp(48): warning C4101: 'x': ローカル変数は 1 度も使われていません。
+  FollowCamera.cpp
+  Camera.cpp
+  コードを生成中...
+     ライブラリ C:\Users\s162008\Desktop\GameEngineTK\Debug\GameEngineTK.lib とオブジェクト C:\Users\s162008\Desktop\GameEngineTK\Debug\GameEngineTK.exp を作成中
   GameEngineTK.vcxproj -> C:\Users\s162008\Desktop\GameEngineTK\Debug\GameEngineTK.exe
   GameEngineTK.vcxproj -> C:\Users\s162008\Desktop\GameEngineTK\Debug\GameEngineTK.pdb (Full PDB)

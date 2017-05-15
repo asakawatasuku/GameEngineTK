@@ -31,7 +31,7 @@ protected:
 public:
 	Camera(int width,int height);
 	virtual ~Camera();
-	void update();
+	virtual void update();
 
 	/// <summary>
 	/// getŠÖ”

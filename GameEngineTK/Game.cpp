@@ -45,8 +45,8 @@ void Game::Initialize(HWND window, int width, int height)
 	// 初期化処理
 
 	srand(static_cast<unsigned int>(time(nullptr)));
-	float x;
-	float z;
+	//float x;
+	//float z;
 
 	m_cnt = 0;
 	m__cnt = 0;
@@ -124,6 +124,10 @@ void Game::Initialize(HWND window, int width, int height)
 	//	m_worldTeapot[i] = scalemat * rotmat * m_transmat[i];
 	//}
 
+	// カメラの作成
+	m_camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
+	m_head_pos = Vector3(0, 0, 30.0f);
+	//m_head_pos = Vector3(0, 0, 0);
 }
 
 // Executes the basic game loop.
@@ -149,7 +153,7 @@ void Game::Update(DX::StepTimer const& timer)
 	// マイフレーム処理
 
 	// デバッグカメラの更新
-	m_debagCamera->Update();
+	//m_debagCamera->Update();
 
 	m_cnt += 0.036f;
 
@@ -219,7 +223,7 @@ void Game::Update(DX::StepTimer const& timer)
 	//	// ピッチ
 	//	Matrix rotmatx = Matrix::CreateRotationX(XMConvertToRadians(0));
 	//	// ヨー
- //		Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36*2)*m_cnt);
+	//	Matrix rotmaty = Matrix::CreateRotationY(XMConvertToRadians(36*2)*m_cnt);
 	//	// 回転行列の合成
 	//	Matrix rotmat = (rotmatz * rotmatx * rotmaty);
 	//	// ワールド行列の合成(SRT)
@@ -270,10 +274,10 @@ void Game::Update(DX::StepTimer const& timer)
 	// 後退処理
 	if (kb.S)
 	{
-		Vector3 moveV(0, 0, -0.1f);
+		Vector3 moveV(0, 0, 0.1f);
 		// 移動ベクトルを回転
 		moveV = Vector3::TransformNormal(moveV, m_worldhead);
-		m_head_pos -= moveV;
+		m_head_pos += moveV;
 	}
 
 	{// 自機のワールド行列を作成
@@ -284,12 +288,23 @@ void Game::Update(DX::StepTimer const& timer)
 		// 平行移動行列をワールド行列に
 		m_worldhead = rotmat * transmat;
 	}
+
+	// 自機追従カメラの更新
+	{
+		m_camera->set_target_pos(m_head_pos);
+		m_camera->set_target_angle(m_angule);
+		m_camera->update();
+
+		// 行列
+		m_view = m_camera->get_view();
+		m_proj = m_camera->get_proj();
+
+	}
 }
 
 // Draws the scene.
 void Game::Render()
 {
-
 	uint16_t indices[] =
 	{
 		0,1,2,
@@ -320,14 +335,34 @@ void Game::Render()
 	//	Vector3::Zero /*カメラ参照点*/,
 	//	Vector3::UnitY/*Vector3(0, 0, 0)*//*上方向ベクトル*/);
 
-	// debagcameraからビュー行列を取得
-	m_view = m_debagCamera->GetCameraMatrix();
+	// デバックカメラからビュー行列を取得
+	//m_view = m_debagCamera->GetCameraMatrix();
+
+	//// カメラの視点座標
+	//Vector3 eyepos(0, 0, 5.0f);
+	//// カメラの注視点(参照点)
+	//Vector3 refpos(0, 0, 0);
+	//// カメラの上方向ベクトル
+	//Vector3 upvec(0, 1.0f, 0);
+	////upvec.Normalize();
+	//// ビュー行列の生成
+	//m_view = Matrix::CreateLookAt(eyepos, refpos, upvec);
 
 	// プロジェクション行列を作成
-	m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f /*視野角(上下方向)*/,
-		float(m_outputWidth) / float(m_outputHeight) /*アスペクト比*/, 
-		0.1f /*ニアクリップ*/,
-		500.f /*ファークリップ*/);
+	//// 垂直方向視野
+	//float fovY = XMConvertToRadians(60.0f);
+	//// アスペクト比(縦横の比率)
+	//float aspect = (float)m_outputWidth / m_outputHeight;
+	//// ニアクリップ(手前の表示限界)
+	//float nearclip = 1.0f;
+	//// ファークリップ(奥の表示限界)
+	//float farclip = 1000.0f;
+	//m_proj = Matrix::CreatePerspectiveFieldOfView(fovY, aspect, nearclip, farclip);
+	//m_proj = Matrix::CreatePerspectiveFieldOfView(XM_PI / 4.f /*視野角(上下方向)*/,
+	//	float(m_outputWidth) / float(m_outputHeight) /*アスペクト比*/, 
+	//	0.1f /*ニアクリップ*/,
+	//	500.f /*ファークリップ*/);
+
 
 	m_basicEffect->SetView(m_view);
 	m_basicEffect->SetProjection(m_proj);
