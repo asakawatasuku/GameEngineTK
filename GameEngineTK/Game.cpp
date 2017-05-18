@@ -126,8 +126,9 @@ void Game::Initialize(HWND window, int width, int height)
 
 	// ƒJƒƒ‰‚Ìì¬
 	m_camera = std::make_unique<FollowCamera>(m_outputWidth, m_outputHeight);
-	m_head_pos = Vector3(0, 0, 30.0f);
+	//m_head_pos = Vector3(0, 0, 30.0f);
 	//m_head_pos = Vector3(0, 0, 0);
+	m_camera->set_keyboard(&m_keyboard->Get());
 }
 
 // Executes the basic game loop.
